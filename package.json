@@ -1,0 +1,17 @@
+{
+  "name": "find-dup-values",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "author": "qualitymanifest",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.1.0",
+    "colors": "^1.4.0",
+    "gar": "^1.0.4"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "safe-regex": "^2.1.1"
+  }
+}
