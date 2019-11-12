@@ -1,22 +1,21 @@
 const { readFile, readdir, lstat } = require("fs").promises;
 const { join } = require("path");
 const { queue } = require("async");
-const { red, green, cyan, yellow } = require("colors/safe");
+const { red } = require("colors/safe");
 
 const {
     isNumberRegexGlobal,
     isStringRegexGlobal,
-    isNumericObjKeyRegex,
-    stripNumericObjKeyRegex,
     stripQuotesRegex
 } = require("./lib/regex");
 const handleArgs = require("./lib/handle_args");
+const ValueList = require("./lib/ValueList");
+const valueList = new ValueList();
 
 const ignoreDirs = ["node_modules", ".git", ".meteor"];
 const ignoreFiles = ["scatterplot.jsx", "constants.js"];
-const valueList = {};
 
-const q = queue(async ({ path, isDir }, cb) => {
+const q = queue(async ({ path, isDir }) => {
     if (isDir) {
         const dirContents = await readdir(path, { withFileTypes: true });
         dirContents.map(dirent => {
@@ -32,12 +31,13 @@ const q = queue(async ({ path, isDir }, cb) => {
     }
     else {
         const values = await processFile(path);
-        addValues(values, path);
+        valueList.addValues(values, path);
     }
 }, 1);
 
 q.error((err, task) => {
     console.log(red(`Task ${task.path} experienced an error: ${err}`));
+    throw err;
 });
 
 const processFile = async (path) => {
@@ -45,56 +45,10 @@ const processFile = async (path) => {
     let strings = fileContents.match(isStringRegexGlobal);
     let numbers = fileContents.match(isNumberRegexGlobal);
     // Strip out leading and trailing quotation marks
+    // .match returns null if it's empty
     strings = strings ? strings.map((string) => string.replace(stripQuotesRegex, "")) : [];
-    // .match returns numbers, not strings
-    // could convert it to a number, but it's still going to end up as a string when it becomes an object key
-    // use ###  ### to indicate that it's really a number
-    numbers = numbers ? numbers.map((number) => `### ${number} ###`) : [];
-    return [...strings, ...numbers];
-}
-
-const addValues = (values, path) => {
-    values.forEach(value => {
-        if (!valueList[value]) {
-            valueList[value] = { [path]: 1 };
-        }
-        else if (!valueList[value][path]) {
-            valueList[value][path] = 1;
-        }
-        else valueList[value][path] += 1;
-    });
-}
-
-const removeSingles = () => {
-    const dupes = [];
-    Object.entries(valueList).forEach(([value, pathList]) => {
-        const pathKeys = Object.keys(pathList);
-        if (pathKeys.length > 1 || pathList[pathKeys[0]] > 1) {
-            dupes.push({ value, pathList });
-        }
-    });
-    return dupes;
-};
-
-const printResults = (results) => {
-    results = results.sort((a, b) => {
-        return (a.value > b.value);
-    })
-    results.forEach(res => {
-        if (isNumericObjKeyRegex.test(res.value)) {
-            res.value = res.value.replace(stripNumericObjKeyRegex, "");
-            console.log(green.bold(res.value))
-        }
-        else {
-            console.log(cyan.bold(res.value));
-        }
-        let total = 0;
-        for (let [path, amount] of Object.entries(res.pathList)) {
-            console.log(`     ${path} ` + yellow.bold(amount));
-            total += amount;
-        }
-        console.log(red.bold(`                      TOTAL: ${total}`));
-    });
+    numbers = numbers ? numbers : [];
+    return {strings, numbers};
 }
 
 const runPipeline = async (args) => {
@@ -103,8 +57,8 @@ const runPipeline = async (args) => {
     const isDir = stat.isDirectory();
     q.push({ path: processedArgs.dir, isDir });
     await q.drain();
-    const dupes = removeSingles();
-    printResults(dupes);
+    valueList.removeSingles();
+    valueList.print();
 }
 
 runPipeline();
