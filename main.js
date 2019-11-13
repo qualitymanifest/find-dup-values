@@ -8,7 +8,7 @@ const {
     isStringRegexGlobal,
     stripQuotesRegex
 } = require("./lib/regex");
-const handleArgs = require("./lib/handle_args");
+const handleOptions = require("./lib/handle-options");
 const ValueList = require("./lib/ValueList");
 const valueList = new ValueList();
 
@@ -51,16 +51,16 @@ const processFile = async (path) => {
     return { strings, numbers };
 }
 
-const runPipeline = async (args) => {
-    const processedArgs = handleArgs(args);
-    const stat = await lstat(processedArgs.dir);
+const main = async (args) => {
+    const options = handleOptions(args);
+    const stat = await lstat(options.dir);
     const isDir = stat.isDirectory();
-    q.push({ path: processedArgs.dir, isDir });
+    q.push({ path: options.dir, isDir });
     await q.drain();
     valueList.removeSingles();
     valueList.print();
 }
 
-runPipeline();
+main();
 
-module.exports = runPipeline;
+module.exports = main;
