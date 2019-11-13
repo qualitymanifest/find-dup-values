@@ -23,7 +23,7 @@ const q = queue(async ({ path, isDir }) => {
             const newPath = join(path, name);
             if (dirent.isDirectory() && !ignoreDirs.includes(dirent.name)) {
                 q.push({ path: newPath, isDir: true });
-            } 
+            }
             else if (!ignoreFiles.includes(name) && (name.endsWith(".jsx") || name.endsWith(".js"))) {
                 q.push({ path: newPath, isDir: false });
             }
@@ -48,7 +48,7 @@ const processFile = async (path) => {
     // .match returns null if it's empty
     strings = strings ? strings.map((string) => string.replace(stripQuotesRegex, "")) : [];
     numbers = numbers ? numbers : [];
-    return {strings, numbers};
+    return { strings, numbers };
 }
 
 const runPipeline = async (args) => {
