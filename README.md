@@ -2,8 +2,6 @@ Recursively navigates a file tree and searches inside files for repeated strings
 
 Needs a lot of work:
 - Need to investigate compatibility with other languages. Currently only tested with `.js` files, where there are considerations like ignoring `require`s and `imports`, etc. Will likely require slightly different regex for other languages.
-- Need to accept arguments for file extensions to use
-- Need to accept arguments for file/dirnames to ignore
 - Test coverage
 - Error handling
 
@@ -18,4 +16,4 @@ node main.js [options]
 -e   Comma-separated list of file extensions to read from
 ```
 
-Alternatively, you can pass arguments by modifying `config.js`
+Alternatively, you can pass arguments by modifying `config.js`, which can be overridden by passing command line arguments.
