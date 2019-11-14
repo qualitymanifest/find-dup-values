@@ -13,5 +13,9 @@ Needs a lot of work:
 
 ```
 node main.js [options]
---dir="../Path/To/Project"
+-p   Path to file or directory to start at
+-i   Comma-separated list of file or directory names to ignore
+-e   Comma-separated list of file extensions to read from
 ```
+
+Alternatively, you can pass arguments by modifying `config.js`
