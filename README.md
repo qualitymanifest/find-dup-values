@@ -1,13 +1,6 @@
 Recursively navigates a file tree and searches inside files for repeated strings and numbers. Then, prints out a list of all repeated values and the files they are found in. Useful to find values that should be moved to a constants file.
 
-Needs a lot of work:
-- Need to investigate compatibility with other languages. Currently only tested with `.js` files, where there are considerations like ignoring `require`s and `imports`, etc. Will likely require slightly different regex for other languages.
-- Test coverage
-- Error handling
-
-
 ### Usage:
-
 
 ```
 node main.js [options]
@@ -16,4 +9,4 @@ node main.js [options]
 -e   Comma-separated list of file extensions to read from
 ```
 
-Alternatively, you can pass arguments by modifying `config.js`, which can be overridden by passing command line arguments.
+Alternatively, you can provide options by modifying `config.js`. This way you do not have to provide command line arguments, however if you do, they take precedent over `config.js`. Another benefit to using `config.js` is the ability to pass regular expressions for filenames to ignore.
