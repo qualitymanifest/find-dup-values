@@ -5,13 +5,23 @@
   "main": "main.js",
   "author": "qualitymanifest",
   "license": "ISC",
+  "scripts": {
+    "start": "node build/main.js",
+    "build": "npx tsc",
+    "watch:build": "tsc -w",
+    "watch:start": "nodemon build/main.js",
+    "dev": "concurrently npm:watch:*"
+  },
   "dependencies": {
     "async": "^3.1.0",
     "colors": "^1.4.0",
     "gar": "^1.0.4"
   },
   "devDependencies": {
+    "concurrently": "^5.1.0",
     "jest": "^24.9.0",
-    "safe-regex": "^2.1.1"
+    "nodemon": "^2.0.2",
+    "safe-regex": "^2.1.1",
+    "typescript": "^3.7.5"
   }
 }

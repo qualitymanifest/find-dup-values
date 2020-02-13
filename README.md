@@ -1,9 +1,18 @@
-Recursively navigates a file tree and searches inside files for repeated strings and numbers. Then, prints out a list of all repeated values and the files they are found in. Useful to find values that should be moved to a constants file.
+This project recursively navigates a file tree and searches inside files for repeated strings and numbers. When done, it prints out a list of all repeated values and the files they are found in. Useful to find values that should be moved to a constants file.
 
-### Usage:
+## Usage:
+
+#### Initial setup:
 
 ```
-node main.js [options]
+npm install
+npm run build
+```
+
+#### Run:
+
+```
+npm run start -- [options]
 -p   Path to file or directory to start at
 -i   Comma-separated list of file or directory names to ignore
 -e   Comma-separated list of file extensions to read from
