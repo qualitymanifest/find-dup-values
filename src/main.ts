@@ -1,24 +1,25 @@
-const { readFile, readdir, lstat } = require("fs").promises;
-const { join, extname } = require("path");
-const { queue } = require("async");
-const { red } = require("colors/safe");
+const { readFile, readdir, lstat } = require("fs").promises; // https://github.com/nodejs/node/pull/31553
+import { Dirent } from "fs";
+import { join, extname } from "path";
+import { queue } from "async";
+import "colors";
 
-const IS_JEST = !!process.env.JEST_WORKER_ID;
-const {
+import {
   isNumberRegexGlobal,
   isStringRegexGlobal,
   stripQuotesRegex
-} = require("./src/regex");
-const { handleOptions } = require("./src/handle-options");
-const config = require("./config");
+} from "./regex";
+import { handleOptions } from "./handleOptions";
+import { ValueList } from "./ValueList";
+import config from "../config";
 const options = handleOptions(config);
-const ValueList = require("./src/ValueList");
 const valueList = new ValueList();
+const IS_JEST = !!process.env.JEST_WORKER_ID;
 
 const q = queue(async ({ path, isDir }) => {
   if (isDir) {
     const dirContents = await readdir(path, { withFileTypes: true });
-    dirContents.map(dirent => {
+    dirContents.map((dirent: Dirent) => {
       const newPath = join(path, dirent.name);
       const newIsDir = dirent.isDirectory();
       if (shouldRead(dirent.name, newIsDir)) {
@@ -26,44 +27,43 @@ const q = queue(async ({ path, isDir }) => {
       }
     });
   } else {
-    const values = await processFile(path);
-    valueList.addValues(values, path);
+    await processFile(path);
   }
 }, 1);
 
 q.error((err, task) => {
-  console.log(red(`Task ${task.path} experienced an error: ${err}`));
+  console.log(`Task ${task.path} experienced an error: ${err}`.red);
   throw err;
 });
 
-const shouldRead = (name, isDir) => {
+const shouldRead = (name: string, isDir: boolean) => {
   if (!isDir && !options.e.includes(extname(name))) {
     return false;
   }
-  for (let ignoreEl of options.i) {
-    if (ignoreEl instanceof RegExp) {
-      const test = ignoreEl.test(name);
-      if (test) {
-        return false;
-      }
-    } else if (ignoreEl === name) {
+  if (options.i.includes(name)) {
+    return false;
+  }
+  for (let ignoreRegex of options.I) {
+    if (ignoreRegex.test(name)) {
       return false;
     }
   }
   return true;
 };
 
-const processFile = async path => {
+const processFile = async (path: string) => {
   const fileContents = await readFile(path, "utf8");
   let strings = fileContents.match(isStringRegexGlobal);
   let numbers = fileContents.match(isNumberRegexGlobal);
-  // Strip out leading and trailing quotation marks
   // .match returns null if it's empty
-  strings = strings
-    ? strings.map(string => string.replace(stripQuotesRegex, ""))
-    : [];
-  numbers = numbers ? numbers : [];
-  return { strings, numbers };
+  if (strings) {
+    // Strip out leading and trailing quotation marks
+    strings = strings.map((s: string) => s.replace(stripQuotesRegex, ""));
+    valueList.addValues(strings, "string", path);
+  }
+  if (numbers) {
+    valueList.addValues(numbers, "number", path);
+  }
 };
 
 const main = async () => {

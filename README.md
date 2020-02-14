@@ -15,7 +15,8 @@ npm run build
 npm run start -- [options]
 -p   Path to file or directory to start at
 -i   Comma-separated list of file or directory names to ignore
+-I   Same as -i, but takes globs instead of strings
 -e   Comma-separated list of file extensions to read from
 ```
 
-Alternatively, you can provide options by modifying `config.js`. This way you do not have to provide command line arguments, however if you do, they take precedent over `config.js`. Another benefit to using `config.js` is the ability to pass regular expressions for filenames to ignore.
+Alternatively, you can provide options by modifying `config.js`. This way you do not have to provide command line arguments, however if you do, they take precedent over `config.js`.

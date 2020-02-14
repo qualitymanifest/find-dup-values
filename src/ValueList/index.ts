@@ -1,56 +1,45 @@
-const { red, green, cyan, yellow } = require("colors/safe");
+import "colors";
 
-const Value = require("../Value");
+import { Value } from "../Value";
 
-class ValueList {
-  constructor() {
-    this.list = [];
-  }
-  getValue(value) {
+export class ValueList {
+  list: Value[] = [];
+  constructor() {}
+  getValue(value: string): Value | null {
     for (let v of this.list) {
-      if (v.getValue() === value) {
+      if (v.getData() === value) {
         return v;
       }
     }
     return null;
   }
-  addValue(value, type, path) {
-    const v = this.getValue(value);
+  addValue(data: string, type: string, path: string): void {
+    const v = this.getValue(data);
     if (v) {
       v.addPath(path);
     } else {
-      this.list.push(new Value(value, type, path));
+      this.list.push(new Value(data, type, path));
     }
   }
-  addValues({ strings, numbers }, path) {
-    strings.forEach(value => {
-      this.addValue(value, "string", path);
-    });
-    numbers.forEach(value => {
-      this.addValue(value, "number", path);
+  addValues(values: string[], type: string, path: string): void {
+    values.forEach(value => {
+      this.addValue(value, type, path);
     });
   }
-  removeSingles(value) {
+  removeSingles(): void {
     this.list = this.list.filter(v => v.getTotal() > 1);
   }
-  print() {
+  print(): void {
     this.list = this.list.sort((a, b) => {
-      return a.total - b.total;
+      return a.getTotal() - b.getTotal();
     });
     this.list.forEach(v => {
-      const value = v.getValue();
-      if (v.type === "number") {
-        console.log(green.bold(value));
-      } else {
-        console.log(cyan.bold(value));
-      }
-      const paths = v.getPaths();
+      console.log(`${v.getType()}: ${v.getData()}`.cyan.bold);
+      const paths = v.getPathList();
       for (let [path, amount] of Object.entries(paths)) {
-        console.log(`    ${path} ` + yellow.bold(amount));
+        console.log(`    ${path} ` + `${amount}`.yellow.bold);
       }
-      console.log(red.bold(`                      TOTAL: ${v.getTotal()}`));
+      console.log(`TOTAL: ${v.getTotal()}`.red.bold);
     });
   }
 }
-
-module.exports = ValueList;

@@ -1,9 +1,5 @@
-const safe = require("safe-regex");
-const {
-  isNumberRegex,
-  isStringRegex,
-  isStringRegexGlobal
-} = require("./index");
+import safe from "safe-regex";
+import { isNumberRegex, isStringRegex, isStringRegexGlobal } from "./index";
 
 describe("numberRegex", () => {
   it("Tests true for numbers with decimals", () => {

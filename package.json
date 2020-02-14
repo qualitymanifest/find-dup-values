@@ -10,14 +10,25 @@
     "build": "npx tsc",
     "watch:build": "tsc -w",
     "watch:start": "nodemon build/main.js",
-    "dev": "concurrently npm:watch:*"
+    "dev": "concurrently npm:watch:*",
+    "test": "jest"
   },
   "dependencies": {
     "async": "^3.1.0",
     "colors": "^1.4.0",
-    "gar": "^1.0.4"
+    "glob-to-regexp": "^0.4.1",
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-typescript": "^7.8.3",
+    "@types/async": "^3.0.7",
+    "@types/glob-to-regexp": "^0.4.0",
+    "@types/jest": "^25.1.2",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^13.7.1",
+    "babel-jest": "^25.1.0",
     "concurrently": "^5.1.0",
     "jest": "^24.9.0",
     "nodemon": "^2.0.2",

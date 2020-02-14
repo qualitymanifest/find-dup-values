@@ -1,27 +1,33 @@
-class Value {
-  constructor(value, type, path) {
-    this.value = value;
-    this.type = type;
-    this.paths = { [path]: 1 };
-    this.total = 1;
+// Not using get/set for perf and naming reasons https://jsperf.com/data-vs-accessor-vs-getter-setter/2
+
+export interface PathList {
+  [key: string]: number;
+}
+
+export class Value {
+  private total = 1;
+  private pathList: PathList;
+  constructor(private data: string, private type: string, path: string) {
+    this.pathList = { [path]: 1 };
   }
-  getValue() {
-    return this.value;
+  getData(): string {
+    return this.data;
   }
-  getPaths() {
-    return this.paths;
+  getTotal(): number {
+    return this.total;
   }
-  addPath(path) {
-    if (this.paths[path]) {
-      this.paths[path] += 1;
+  getPathList(): PathList {
+    return this.pathList;
+  }
+  getType(): string {
+    return this.type;
+  }
+  addPath(path: string): void {
+    if (this.pathList[path]) {
+      this.pathList[path] += 1;
     } else {
-      this.paths[path] = 1;
+      this.pathList[path] = 1;
     }
     this.total += 1;
   }
-  getTotal() {
-    return this.total;
-  }
 }
-
-module.exports = Value;

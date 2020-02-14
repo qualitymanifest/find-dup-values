@@ -15,14 +15,9 @@
  *   Used to remove those quotation marks.
  */
 
-const isNumberRegex = /(?<!\w|\$|['"`] *)(?:\d+\.?\d*|\.?\d+)(?!\w|\$)/m;
-const isStringRegex = /(?<!(?:class(?:Name)?|type|require|from) *[=\(]? *)(['`"]).*?\1/m;
-const stripQuotesRegex = /^['"`]|['"`]$/g;
+export const isNumberRegex = /(?<!\w|\$|['"`] *)(?:\d+\.?\d*|\.?\d+)(?!\w|\$)/m;
+export const isStringRegex = /(?<!(?:class(?:Name)?|type|require|from) *[=\(]? *)(['`"]).*?\1/m;
+export const stripQuotesRegex = /^['"`]|['"`]$/g;
 
-module.exports = {
-  isNumberRegex,
-  isNumberRegexGlobal: new RegExp(isNumberRegex, "g"),
-  isStringRegex,
-  isStringRegexGlobal: new RegExp(isStringRegex, "g"),
-  stripQuotesRegex
-};
+export const isNumberRegexGlobal = new RegExp(isNumberRegex, "g");
+export const isStringRegexGlobal = new RegExp(isStringRegex, "g");
