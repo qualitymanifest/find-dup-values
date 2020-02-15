@@ -1,5 +1,5 @@
 /* isNumberRegex:
- *   Match 1234, 12.34, .34, 34, -34
+ *   Match N, N.N, .N, -N
  *   Do not match inside a string
  *   Do not match inside a variable name
  *
@@ -13,8 +13,12 @@
  * stripQuotesRegex:
  *   See explanation in isStringRegex about using lookahead/behind for quotation marks
  *   Used to remove those quotation marks.
+ *
+ * non-global versons are needed for testing purposes so that match state doesn't carry over
+ *   See https://stackoverflow.com/questions/2630418/javascript-regex-returning-true-then-false-then-true-etc
  */
 
+export const removeCommentsRegex = /(\/\/.*)|(\/\*(\w|\s|\n|\/|(\*(?!\/)))*\*\/)/gm;
 export const isNumberRegex = /(?<!\w|\$|['"`] *)(?:\d+\.?\d*|\.?\d+)(?!\w|\$)/m;
 export const isStringRegex = /(?<!(?:class(?:Name)?|type|require|from) *[=\(]? *)(['`"]).*?\1/m;
 export const stripQuotesRegex = /^['"`]|['"`]$/g;

@@ -1,4 +1,4 @@
-This project recursively navigates a file tree and searches inside files for repeated strings and numbers. When done, it prints out a list of all repeated values and the files they are found in. Useful to find values that should be moved to a constants file.
+This project recursively navigates a file tree and searches inside files for repeated strings and numbers. When done, it prints out a list of all repeated values and the files they are found in. This can be useful to find values that should be moved to a constants file. Processing and printing the results of Node.js's 50kloc `lib` directory takes approx 0.6 seconds on a i5-8250U processor.
 
 ## Usage:
 

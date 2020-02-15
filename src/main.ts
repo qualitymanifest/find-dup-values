@@ -7,7 +7,8 @@ import "colors";
 import {
   isNumberRegexGlobal,
   isStringRegexGlobal,
-  stripQuotesRegex
+  stripQuotesRegex,
+  removeCommentsRegex
 } from "./regex";
 import { handleOptions } from "./handleOptions";
 import { ValueList } from "./ValueList";
@@ -52,7 +53,8 @@ const shouldRead = (name: string, isDir: boolean) => {
 };
 
 const processFile = async (path: string) => {
-  const fileContents = await readFile(path, "utf8");
+  let fileContents = await readFile(path, "utf8");
+  fileContents = fileContents.replace(removeCommentsRegex, "");
   let strings = fileContents.match(isStringRegexGlobal);
   let numbers = fileContents.match(isNumberRegexGlobal);
   // .match returns null if it's empty
