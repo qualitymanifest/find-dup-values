@@ -16,6 +16,7 @@ import config from "../config";
 const options = handleOptions(config);
 const valueList = new ValueList();
 const IS_JEST = !!process.env.JEST_WORKER_ID;
+let filesProcessed = 0;
 
 const q = queue(async ({ path, isDir }) => {
   if (isDir) {
@@ -29,6 +30,10 @@ const q = queue(async ({ path, isDir }) => {
     });
   } else {
     await processFile(path);
+    filesProcessed++;
+    if (filesProcessed % 100 === 0) {
+      process.stdout.write(`Files processed: ${filesProcessed} \r`);
+    }
   }
 }, 1);
 
@@ -61,10 +66,15 @@ const processFile = async (path: string) => {
   if (strings) {
     // Strip out leading and trailing quotation marks
     strings = strings.map((s: string) => s.replace(stripQuotesRegex, ""));
-    valueList.addValues(strings, "string", path);
+    valueList.addValues(strings, path);
   }
   if (numbers) {
-    valueList.addValues(numbers, "number", path);
+    const actualNumbers = numbers.map((numStr: string): number => {
+      const actualNumber = Number(numStr);
+      if (isNaN(actualNumber)) throw new Error("Number regex failed");
+      return actualNumber;
+    });
+    valueList.addValues(actualNumbers, path);
   }
 };
 
@@ -73,7 +83,6 @@ const main = async () => {
   const isDir = stat.isDirectory();
   q.push({ path: options.p, isDir });
   await q.drain();
-  valueList.removeSingles();
   if (IS_JEST) {
     return valueList;
   } else {

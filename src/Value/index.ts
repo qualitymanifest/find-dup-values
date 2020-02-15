@@ -7,10 +7,10 @@ export interface PathList {
 export class Value {
   private total = 1;
   private pathList: PathList;
-  constructor(private data: string, private type: string, path: string) {
+  constructor(private data: string | number, path: string) {
     this.pathList = { [path]: 1 };
   }
-  getData(): string {
+  getData(): string | number {
     return this.data;
   }
   getTotal(): number {
@@ -18,9 +18,6 @@ export class Value {
   }
   getPathList(): PathList {
     return this.pathList;
-  }
-  getType(): string {
-    return this.type;
   }
   addPath(path: string): void {
     if (this.pathList[path]) {

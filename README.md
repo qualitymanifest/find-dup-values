@@ -1,4 +1,6 @@
-This project recursively navigates a file tree and searches inside files for repeated strings and numbers. When done, it prints out a list of all repeated values and the files they are found in. This can be useful to find values that should be moved to a constants file. Processing and printing the results of Node.js's 50kloc `lib` directory takes approx 0.6 seconds on a i5-8250U processor.
+This project recursively navigates a file tree and searches inside files for repeated strings and numbers. When done, it prints out a list of all repeated values and the files they are found in. This can be useful to find values that should be moved to a constants file.
+
+Processing all 1.23mloc of JavaScript in Node.js (including lib, deps, test, benchmark dirs) takes approx 5 seconds on a mid-range processor. Most projects will take less than half a second to process.
 
 ## Usage:
 
