@@ -1,5 +1,5 @@
 const { readFile, readdir, lstat } = require("fs").promises; // https://github.com/nodejs/node/pull/31553
-import { Dirent } from "fs";
+import { Dirent, Stats } from "fs";
 import { join, extname } from "path";
 import { queue } from "async";
 import "colors";
@@ -18,7 +18,12 @@ const valueList = new ValueList();
 const IS_JEST = !!process.env.JEST_WORKER_ID;
 let filesProcessed = 0;
 
-const q = queue(async ({ path, isDir }) => {
+type QueueArgs = {
+  path: string;
+  isDir: boolean;
+};
+
+const q = queue(async ({ path, isDir }: QueueArgs) => {
   if (isDir) {
     const dirContents = await readdir(path, { withFileTypes: true });
     dirContents.map((dirent: Dirent) => {
@@ -58,18 +63,18 @@ const shouldRead = (name: string, isDir: boolean) => {
 };
 
 const processFile = async (path: string) => {
-  let fileContents = await readFile(path, "utf8");
+  let fileContents: string = await readFile(path, "utf8");
   fileContents = fileContents.replace(removeCommentsRegex, "");
   let strings = fileContents.match(isStringRegexGlobal);
   let numbers = fileContents.match(isNumberRegexGlobal);
   // .match returns null if it's empty
   if (strings) {
     // Strip out leading and trailing quotation marks
-    strings = strings.map((s: string) => s.replace(stripQuotesRegex, ""));
+    strings = strings.map(s => s.replace(stripQuotesRegex, ""));
     valueList.addValues(strings, path);
   }
   if (numbers) {
-    const actualNumbers = numbers.map((numStr: string): number => {
+    const actualNumbers: number[] = numbers.map((numStr): number => {
       const actualNumber = Number(numStr);
       if (isNaN(actualNumber)) throw new Error("Number regex failed");
       return actualNumber;
@@ -79,8 +84,8 @@ const processFile = async (path: string) => {
 };
 
 const main = async () => {
-  const stat = await lstat(options.p);
-  const isDir = stat.isDirectory();
+  const stat: Stats = await lstat(options.p);
+  const isDir: boolean = stat.isDirectory();
   q.push({ path: options.p, isDir });
   await q.drain();
   if (IS_JEST) {

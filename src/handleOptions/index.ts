@@ -41,8 +41,9 @@ export const handleOptions = (config: any) => {
     errs.push(NO_EXT_ERR);
   }
   if (errs.length) {
-    errs.forEach(err => console.log(err));
-    process.exit();
+    const err = new Error(errs.join("\n"));
+    err.stack = ""; // Not needed here, just gets in the way
+    throw err;
   }
   return options;
 };

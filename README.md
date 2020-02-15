@@ -1,6 +1,6 @@
 This project recursively navigates a file tree and searches inside files for repeated strings and numbers. When done, it prints out a list of all repeated values and the files they are found in. This can be useful to find values that should be moved to a constants file.
 
-Processing all 1.23mloc of JavaScript in Node.js (including lib, deps, test, benchmark dirs) takes approx 5 seconds on a mid-range processor. Most projects will take less than half a second to process.
+Processing all 1.23mloc of JavaScript in Node.js (including lib, tests, benchmarks, all dependencies like v8 and npm as well as their tests) takes approx 5 seconds on a mid-range processor. Most projects will take less than half a second to process.
 
 ## Usage:
 

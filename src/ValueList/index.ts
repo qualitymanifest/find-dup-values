@@ -5,7 +5,7 @@ import { Value } from "../Value";
 export class ValueList {
   valueMap: Map<string | number, Value> = new Map();
   constructor() {}
-  addValue(data: string | number, path: string): void {
+  addValue(data: string | number, path: string) {
     const existingValue = this.valueMap.get(data);
     if (existingValue) {
       existingValue.addPath(path);
@@ -13,24 +13,26 @@ export class ValueList {
       this.valueMap.set(data, new Value(data, path));
     }
   }
-  addValues(values: string[], path: string): void {
-    values.forEach(value => {
+  addValues(values: string[] | number[], path: string) {
+    values.forEach((value: string | number) => {
       this.addValue(value, path);
     });
   }
-  print(): void {
+  print() {
     const valueArray = Array.from(this.valueMap.values());
     const sortedByTotal = valueArray.sort((a, b) => {
       return a.getTotal() - b.getTotal();
     });
     sortedByTotal.forEach(v => {
       if (v.getTotal() < 2) return;
-      console.log(`${typeof v.getData()}: ${v.getData()}`.cyan.bold);
+      console.log(
+        `${typeof v.getData()}: `.cyan.bold + `${v.getData()}`.bgCyan
+      );
       const paths = v.getPathList();
       for (let [path, amount] of Object.entries(paths)) {
         console.log(`    ${path} ` + `${amount}`.yellow.bold);
       }
-      console.log(`TOTAL: ${v.getTotal()}`.red.bold);
+      console.log(`    TOTAL: ${v.getTotal()}`.red.bold);
     });
   }
 }
