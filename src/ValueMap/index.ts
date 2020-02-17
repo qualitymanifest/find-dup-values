@@ -2,15 +2,15 @@ import "colors";
 
 import { Value } from "../Value";
 
-export class ValueList {
-  valueMap: Map<string | number, Value> = new Map();
+export class ValueMap {
+  map: Map<string | number, Value> = new Map();
   constructor() {}
   addValue(data: string | number, path: string) {
-    const existingValue = this.valueMap.get(data);
+    const existingValue = this.map.get(data);
     if (existingValue) {
       existingValue.addPath(path);
     } else {
-      this.valueMap.set(data, new Value(data, path));
+      this.map.set(data, new Value(data, path));
     }
   }
   addValues(values: string[] | number[], path: string) {
@@ -19,7 +19,7 @@ export class ValueList {
     });
   }
   print() {
-    const valueArray = Array.from(this.valueMap.values());
+    const valueArray = Array.from(this.map.values());
     const sortedByTotal = valueArray.sort((a, b) => {
       return a.getTotal() - b.getTotal();
     });

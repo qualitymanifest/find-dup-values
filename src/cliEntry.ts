@@ -1,10 +1,13 @@
 import minimist from "minimist";
 
 import main from "./main";
-import { ValueList } from "./ValueList";
+import { ValueMap } from "./ValueMap";
 
-const args: any = minimist(process.argv.slice(2));
-
+let args: any = minimist(process.argv.slice(2));
+let config = {};
+if (args.c) {
+  config = require(args.c);
+}
 if (args.i) {
   args.i = args.i.split(",");
 }
@@ -12,9 +15,11 @@ if (args.e) {
   args.e = args.e.split(",");
 }
 
+args = { ...config, ...args };
+
 main(args)
-  .then((valueList: ValueList) => {
-    valueList.print();
+  .then((valueMap: ValueMap) => {
+    valueMap.print();
   })
   .catch((err: Error) => {
     throw err;

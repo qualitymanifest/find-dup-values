@@ -11,9 +11,9 @@ import {
   removeCommentsRegex
 } from "./regex";
 import { handleOptions, RawOptions, ParsedOptions } from "./handleOptions";
-import { ValueList } from "./ValueList";
+import { ValueMap } from "./ValueMap";
 
-const valueList = new ValueList();
+const valueMap = new ValueMap();
 let filesProcessed = 0;
 let options: ParsedOptions;
 
@@ -70,7 +70,7 @@ const processFile = async (path: string) => {
   if (strings) {
     // Strip out leading and trailing quotation marks
     strings = strings.map(s => s.replace(stripQuotesRegex, ""));
-    valueList.addValues(strings, path);
+    valueMap.addValues(strings, path);
   }
   if (numbers) {
     const actualNumbers: number[] = numbers.map((numStr): number => {
@@ -78,11 +78,11 @@ const processFile = async (path: string) => {
       if (isNaN(actualNumber)) throw new Error("Numeric regex failed");
       return actualNumber;
     });
-    valueList.addValues(actualNumbers, path);
+    valueMap.addValues(actualNumbers, path);
   }
 };
 
-const main = (config: RawOptions): Promise<ValueList> => {
+const main = (config: RawOptions): Promise<ValueMap> => {
   return new Promise(async (resolve, reject) => {
     process.on("uncaughtException", err => {
       // This catches errors thrown by q.error
@@ -98,7 +98,7 @@ const main = (config: RawOptions): Promise<ValueList> => {
     } catch (err) {
       reject(err);
     }
-    resolve(valueList);
+    resolve(valueMap);
   });
 };
 

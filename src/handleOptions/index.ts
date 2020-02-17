@@ -31,7 +31,7 @@ export const handleOptions = (rawOptions: RawOptions) => {
   const parsedOptions: ParsedOptions = {
     ...rawOptions,
     i: rawOptions.i ? [...rawOptions.i, ...DEFAULT_IGNORE] : DEFAULT_IGNORE,
-    I: convertGlobs(rawOptions.i)
+    I: convertGlobs(rawOptions.I)
   };
   const errs = [];
   if (!parsedOptions.p) {
