@@ -102,4 +102,4 @@ const main = (config: RawOptions): Promise<ValueMap> => {
   });
 };
 
-export = main;
+module.exports = main;
