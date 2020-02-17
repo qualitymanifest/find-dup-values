@@ -1,5 +1,3 @@
-import minimist from "minimist";
-
 import { handleOptions } from "./index";
 import { NO_PATH_ERR, BAD_PATH_ERR, NO_EXT_ERR } from "../constants";
 
@@ -22,31 +20,36 @@ const catchErrMsg = args => {
 describe("handleOptions", () => {
   it("Handles all valid input", () => {
     const args = {
-      p: "./",
-      i: [".meteor", "test", "other.js"],
-      I: ["*test*"],
-      e: [".js", ".jsx", ".ts"]
+      path: "./",
+      ignoreStrings: [".meteor", "test", "other.js"],
+      ignoreGlobs: ["*test*"],
+      extensions: [".js", ".jsx", ".ts"]
     };
     const result = handleOptions(args);
-    expect(result.p).toBe("./");
-    expect(result.i).toEqual(
+    expect(result.path).toBe("./");
+    expect(result.ignoreStrings).toEqual(
       expect.arrayContaining([".meteor", "test", "other.js"])
     );
-    expect(result.I).toEqual(expect.arrayContaining([/^.*test.*$/]));
-    expect(result.e).toEqual(expect.arrayContaining([".js", ".jsx", ".ts"]));
+    expect(result.ignoreGlobs).toEqual(expect.arrayContaining([/^.*test.*$/]));
+    expect(result.extensions).toEqual(
+      expect.arrayContaining([".js", ".jsx", ".ts"])
+    );
   });
   it("Throws an error if no starting file/dir is given", () => {
-    const args = minimist(["-e", ".js,.jsx,.ts"]);
+    const args = { extensions: [".js", ".jsx", ".ts"] };
     const errMsg = catchErrMsg(args);
     expect(errMsg).toEqual(NO_PATH_ERR);
   });
   it("Throws an error if a non-existent file/dir is given", () => {
-    const args = minimist(["-p", "./not/real/at/all", "-e", ".js,.jsx,.ts"]);
+    const args = {
+      path: "./not/real/at/all",
+      extensions: [".js", ".jsx", ".ts"]
+    };
     const errMsg = catchErrMsg(args);
     expect(errMsg).toEqual(BAD_PATH_ERR);
   });
   it("Throws an error if a no file extensions are given", () => {
-    const args = minimist(["-p", "./"]);
+    const args = { path: "./" };
     const errMsg = catchErrMsg(args);
     expect(errMsg).toEqual(NO_EXT_ERR);
   });
