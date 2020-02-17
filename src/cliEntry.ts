@@ -3,16 +3,26 @@ import minimist from "minimist";
 import main from "./main";
 import { ValueMap } from "./ValueMap";
 
-let args: any = minimist(process.argv.slice(2));
+let args: any = minimist(process.argv.slice(2), {
+  alias: {
+    p: "path",
+    i: "ignoreStrings",
+    I: "ignoreGlobs",
+    e: "extensions"
+  }
+});
 let config = {};
 if (args.c) {
   config = require(args.c);
 }
-if (args.i) {
-  args.i = args.i.split(",");
+if (args.ignoreStrings) {
+  args.ignoreStrings = args.ignoreStrings.split(",");
 }
-if (args.e) {
-  args.e = args.e.split(",");
+if (args.ignoreGlobs) {
+  args.ignoreGlobs = args.ignoreGlobs.split(",");
+}
+if (args.extensions) {
+  args.extensions = args.extensions.split(",");
 }
 
 args = { ...config, ...args };

@@ -9,17 +9,17 @@ import {
 } from "../constants";
 
 interface Options {
-  p: string;
-  i: string[];
-  e: string[];
+  path: string;
+  ignoreStrings: string[];
+  extensions: string[];
 }
 
 export interface RawOptions extends Options {
-  I: string[];
+  ignoreGlobs: string[];
 }
 
 export interface ParsedOptions extends Options {
-  I: RegExp[];
+  ignoreGlobs: RegExp[];
 }
 
 const convertGlobs = (globs: string[]): RegExp[] => {
@@ -30,17 +30,19 @@ const convertGlobs = (globs: string[]): RegExp[] => {
 export const handleOptions = (rawOptions: RawOptions) => {
   const parsedOptions: ParsedOptions = {
     ...rawOptions,
-    i: rawOptions.i ? [...rawOptions.i, ...DEFAULT_IGNORE] : DEFAULT_IGNORE,
-    I: convertGlobs(rawOptions.I)
+    ignoreStrings: rawOptions.ignoreStrings
+      ? [...rawOptions.ignoreStrings, ...DEFAULT_IGNORE]
+      : DEFAULT_IGNORE,
+    ignoreGlobs: convertGlobs(rawOptions.ignoreGlobs)
   };
   const errs = [];
-  if (!parsedOptions.p) {
+  if (!parsedOptions.path) {
     // path cannot be omitted
     errs.push(NO_PATH_ERR);
-  } else if (!existsSync(parsedOptions.p)) {
+  } else if (!existsSync(parsedOptions.path)) {
     errs.push(BAD_PATH_ERR);
   }
-  if (!parsedOptions.e) {
+  if (!parsedOptions.extensions) {
     // extensions cannot be omitted
     errs.push(NO_EXT_ERR);
   }

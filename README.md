@@ -13,16 +13,16 @@ Processing all 1.23mloc of JavaScript in Node.js (including lib, tests, benchmar
 
 <pre>
 npm run start -- [options]
-<b>-p</b>   Path to file or directory to start at
--i   Comma-separated list of file or directory names to ignore
--I   Same as -i, but takes globs instead of strings
-<b>-e</b>   Comma-separated list of file extensions to read from
--c   Path to config file which exports the above values
+<b>-p | --path</b>           Path to file or directory to start at
+-i | --ignoreStrings  Comma-separated list of file or directory names to ignore
+-I | --ignoreGlobs    Same as -i, but takes globs instead of strings
+<b>-e | --extensions</b>     Comma-separated list of file extensions to read from
+-c | --config         Path to config file which exports the above values
 </pre>
 
 #### Note:
 
-- Bold options are required
+- **Bold** options are required
 - If a config file is provided as well as other CLI arguments, the CLI arguments take precedence
 - For an example of how a config file should be formatted, see the `config` object in the module example below
 
@@ -38,10 +38,10 @@ npm run start -- [options]
 const fdv = require("find-dup-values");
 
 const config = {
-  p: "../path/to/project", // required
-  i: [".someDir", "someFile.js"],
-  I: ["*test*", "*spec.js"],
-  e: [".js", ".jsx", ".ts", ".tsx"] // required
+  path: "../path/to/project", // required
+  ignoreStrings: [".someDir", "someFile.js"],
+  ignoreGlobs: ["*test*", "*spec.js"],
+  extensions: [".js", ".jsx", ".ts", ".tsx"] // required
 };
 
 fdv(config)

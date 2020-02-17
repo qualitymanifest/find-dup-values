@@ -47,13 +47,13 @@ q.error((err, task) => {
 });
 
 const shouldRead = (name: string, isDir: boolean) => {
-  if (!isDir && !options.e.includes(extname(name))) {
+  if (!isDir && !options.extensions.includes(extname(name))) {
     return false;
   }
-  if (options.i.includes(name)) {
+  if (options.ignoreStrings.includes(name)) {
     return false;
   }
-  for (let ignoreRegex of options.I) {
+  for (let ignoreRegex of options.ignoreGlobs) {
     if (ignoreRegex.test(name)) {
       return false;
     }
@@ -91,9 +91,9 @@ const main = (config: RawOptions): Promise<ValueMap> => {
     });
     try {
       options = handleOptions(config);
-      const stat: Stats = await lstat(options.p);
+      const stat: Stats = await lstat(options.path);
       const isDir: boolean = stat.isDirectory();
-      q.push({ path: options.p, isDir });
+      q.push({ path: options.path, isDir });
       await q.drain();
     } catch (err) {
       reject(err);
