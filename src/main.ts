@@ -102,4 +102,4 @@ const main = (config: RawOptions): Promise<ValueList> => {
   });
 };
 
-export default main;
+export = main;

@@ -1,4 +1,5 @@
 import minimist from "minimist";
+
 import main from "./main";
 import { ValueList } from "./ValueList";
 
@@ -15,6 +16,6 @@ main(args)
   .then((valueList: ValueList) => {
     valueList.print();
   })
-  .catch(err => {
+  .catch((err: Error) => {
     throw err;
   });
