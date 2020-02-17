@@ -10,13 +10,12 @@ import {
   stripQuotesRegex,
   removeCommentsRegex
 } from "./regex";
-import { handleOptions } from "./handleOptions";
+import { handleOptions, RawOptions, ParsedOptions } from "./handleOptions";
 import { ValueList } from "./ValueList";
-import config from "../config";
-const options = handleOptions(config);
+
 const valueList = new ValueList();
-const IS_JEST = !!process.env.JEST_WORKER_ID;
 let filesProcessed = 0;
+let options: ParsedOptions;
 
 type QueueArgs = {
   path: string;
@@ -43,7 +42,7 @@ const q = queue(async ({ path, isDir }: QueueArgs) => {
 }, 1);
 
 q.error((err, task) => {
-  console.log(`Task ${task.path} experienced an error: ${err}`.red);
+  err.message = `Processing ${task.path} failed`.red;
   throw err;
 });
 
@@ -76,27 +75,31 @@ const processFile = async (path: string) => {
   if (numbers) {
     const actualNumbers: number[] = numbers.map((numStr): number => {
       const actualNumber = Number(numStr);
-      if (isNaN(actualNumber)) throw new Error("Number regex failed");
+      if (isNaN(actualNumber)) throw new Error("Numeric regex failed");
       return actualNumber;
     });
     valueList.addValues(actualNumbers, path);
   }
 };
 
-const main = async () => {
-  const stat: Stats = await lstat(options.p);
-  const isDir: boolean = stat.isDirectory();
-  q.push({ path: options.p, isDir });
-  await q.drain();
-  if (IS_JEST) {
-    return valueList;
-  } else {
-    valueList.print();
-  }
+const main = (config: RawOptions): Promise<ValueList> => {
+  return new Promise(async (resolve, reject) => {
+    process.on("uncaughtException", err => {
+      // This catches errors thrown by q.error
+      // This way the caller (CLI or other application) can handle it
+      reject(err);
+    });
+    try {
+      options = handleOptions(config);
+      const stat: Stats = await lstat(options.p);
+      const isDir: boolean = stat.isDirectory();
+      q.push({ path: options.p, isDir });
+      await q.drain();
+    } catch (err) {
+      reject(err);
+    }
+    resolve(valueList);
+  });
 };
 
-if (!IS_JEST) {
-  main();
-}
-
-module.exports = main;
+export default main;
