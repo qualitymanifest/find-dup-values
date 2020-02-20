@@ -26,13 +26,13 @@ npm run start -- [options]
 - If a config file is provided as well as other CLI arguments, the CLI arguments take precedence
 - For an example of how a config file should be formatted, see the `config` object in the module example below
 
-## Module Usage
+## Module Usage:
 
-#### Setup
+#### Setup:
 
 - `npm install https://github.com/qualitymanifest/find-dup-values/tarball/master`
 
-#### Run
+#### Run:
 
 ```js
 const fdv = require("find-dup-values");
