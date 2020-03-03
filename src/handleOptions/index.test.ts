@@ -21,16 +21,17 @@ describe("handleOptions", () => {
   it("Handles all valid input", () => {
     const args = {
       path: "./",
-      ignoreStrings: [".meteor", "test", "other.js"],
-      ignoreGlobs: ["*test*"],
+      ignore: [".meteor", "other.js", "*test*"],
       extensions: [".js", ".jsx", ".ts"]
     };
     const result = handleOptions(args);
     expect(result.path).toBe("./");
     expect(result.ignoreStrings).toEqual(
-      expect.arrayContaining([".meteor", "test", "other.js"])
+      expect.arrayContaining([".meteor", "other.js"])
     );
-    expect(result.ignoreGlobs).toEqual(expect.arrayContaining([/^.*test.*$/]));
+    expect(result.ignoreRegexes).toEqual(
+      expect.arrayContaining([/^.*test.*$/])
+    );
     expect(result.extensions).toEqual(
       expect.arrayContaining([".js", ".jsx", ".ts"])
     );
