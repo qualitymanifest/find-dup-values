@@ -18,13 +18,32 @@ export class ValueMap {
       this.addValue(value, path);
     });
   }
-  print() {
-    const valueArray = Array.from(this.map.values());
-    const sortedByTotal = valueArray.sort((a, b) => {
+  toJSON(min: number = 2) {
+    const sortedValueArray = this.toSortedArray();
+    const json: any = { values: [] };
+    sortedValueArray.forEach(v => {
+      if (v.getTotal() < min) return;
+      json.values.push({
+        data: v.getData(),
+        total: v.getTotal(),
+        paths: v.getPaths()
+      });
+    });
+    return json;
+  }
+  private toValueArray() {
+    return Array.from(this.map.values());
+  }
+  private toSortedArray() {
+    const valueArray = this.toValueArray();
+    return valueArray.sort((a, b) => {
       return a.getTotal() - b.getTotal();
     });
-    sortedByTotal.forEach(v => {
-      if (v.getTotal() < 2) return;
+  }
+  print(min: number = 2) {
+    const sortedValueArray = this.toSortedArray();
+    sortedValueArray.forEach(v => {
+      if (v.getTotal() < min) return;
       console.log(
         `${typeof v.getData()}: `.cyan.bold + `${v.getData()}`.bgCyan
       );
