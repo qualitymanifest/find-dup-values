@@ -9,8 +9,7 @@ const cliEntry = () => {
   let args: any = minimist(process.argv.slice(2), {
     alias: {
       p: "path",
-      i: "ignoreStrings",
-      I: "ignoreGlobs",
+      i: "ignore",
       e: "extensions"
     }
   });
@@ -18,11 +17,8 @@ const cliEntry = () => {
   if (args.c) {
     config = require(args.c);
   }
-  if (args.ignoreStrings) {
-    args.ignoreStrings = args.ignoreStrings.split(",");
-  }
-  if (args.ignoreGlobs) {
-    args.ignoreGlobs = args.ignoreGlobs.split(",");
+  if (args.ignore) {
+    args.ignore = args.ignore.split(",");
   }
   if (args.extensions) {
     args.extensions = args.extensions.split(",");

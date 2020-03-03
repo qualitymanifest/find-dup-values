@@ -1,4 +1,5 @@
 import { existsSync } from "fs";
+import isGlob from "is-glob";
 import gtr from "glob-to-regexp";
 
 import {
@@ -10,44 +11,53 @@ import {
 
 interface Options {
   path: string;
-  ignoreStrings: string[];
   extensions: string[];
 }
 
 export interface RawOptions extends Options {
-  ignoreGlobs: string[];
+  ignore: string[];
 }
 
 export interface ParsedOptions extends Options {
-  ignoreGlobs: RegExp[];
+  ignoreStrings: string[];
+  ignoreRegexes: RegExp[];
 }
 
-const convertGlobs = (globs: string[]): RegExp[] => {
-  if (!globs) return [];
-  return globs.map(glob => gtr(glob));
+const processIgnore = (ignoreItems: string[] = []) => {
+  const ignoreStrings = DEFAULT_IGNORE;
+  const ignoreRegexes: RegExp[] = [];
+  ignoreItems.forEach(item => {
+    if (isGlob(item)) {
+      ignoreRegexes.push(gtr(item));
+    } else {
+      ignoreStrings.push(item);
+    }
+  });
+  return { ignoreStrings, ignoreRegexes };
 };
 
 export const handleOptions = (rawOptions: RawOptions) => {
-  const parsedOptions: ParsedOptions = {
-    ...rawOptions,
-    ignoreStrings: rawOptions.ignoreStrings
-      ? [...rawOptions.ignoreStrings, ...DEFAULT_IGNORE]
-      : DEFAULT_IGNORE,
-    ignoreGlobs: convertGlobs(rawOptions.ignoreGlobs)
+  const { path, ignore, extensions } = rawOptions;
+  const { ignoreStrings, ignoreRegexes } = processIgnore(ignore);
+  const processedOptions: ParsedOptions = {
+    path,
+    ignoreStrings,
+    ignoreRegexes,
+    extensions
   };
   const errs = [];
-  if (!parsedOptions.path) {
+  if (!processedOptions.path) {
     // path cannot be omitted
     errs.push(NO_PATH_ERR);
-  } else if (!existsSync(parsedOptions.path)) {
+  } else if (!existsSync(processedOptions.path)) {
     errs.push(BAD_PATH_ERR);
   }
-  if (!parsedOptions.extensions) {
+  if (!processedOptions.extensions) {
     // extensions cannot be omitted
     errs.push(NO_EXT_ERR);
   }
   if (errs.length) {
     throw new Error(errs.join("\n"));
   }
-  return parsedOptions;
+  return processedOptions;
 };

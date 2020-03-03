@@ -1,3 +1,5 @@
+// Note that error handling for missing required arguments is handled in handleOptions, not cliEntry
+
 const cliEntry = require("./index");
 
 process.argv.push(

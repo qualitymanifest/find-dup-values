@@ -14,8 +14,7 @@ Processing all 1.23mloc of JavaScript in Node.js (including lib, tests, benchmar
 <pre>
 npm run start -- [options]
 <b>-p | --path</b>           Path to file or directory to start at
--i | --ignoreStrings  Comma-separated list of file or directory names to ignore
--I | --ignoreGlobs    Same as -i, but takes globs instead of strings
+-i | --ignore  Comma-separated list of file or directory names to ignore, compatible with globs
 <b>-e | --extensions</b>     Comma-separated list of file extensions to read from
 -c | --config         Path to config file which exports the above values
 </pre>
@@ -39,8 +38,7 @@ const fdv = require("find-dup-values");
 
 const config = {
   path: "../path/to/project", // required
-  ignoreStrings: [".someDir", "someFile.js"],
-  ignoreGlobs: ["*test*", "*spec.js"],
+  ignore: [".someDir", "someFile.js", "*test*", "*spec.js"],
   extensions: [".js", ".jsx", ".ts", ".tsx"] // required
 };
 

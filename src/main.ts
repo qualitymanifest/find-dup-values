@@ -53,7 +53,7 @@ const shouldRead = (name: string, isDir: boolean) => {
   if (options.ignoreStrings.includes(name)) {
     return false;
   }
-  for (let ignoreRegex of options.ignoreGlobs) {
+  for (let ignoreRegex of options.ignoreRegexes) {
     if (ignoreRegex.test(name)) {
       return false;
     }
