@@ -28,7 +28,7 @@ export class ValueMap {
       console.log(
         `${typeof v.getData()}: `.cyan.bold + `${v.getData()}`.bgCyan
       );
-      const paths = v.getPathList();
+      const paths = v.getPaths();
       for (let [path, amount] of Object.entries(paths)) {
         console.log(`    ${path} ` + `${amount}`.yellow.bold);
       }

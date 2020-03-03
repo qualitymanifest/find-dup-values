@@ -53,7 +53,7 @@ fdv(config)
       const data = value.getData();
       // Get an object containing the files the value was found in
       // Object keys are file names, properties are number of times the value was found in that file
-      const pathList = value.getPathList();
+      const paths = value.getPaths();
       // Get the total number of times the value was found in the project
       const total = value.getTotal();
     });
