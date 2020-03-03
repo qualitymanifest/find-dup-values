@@ -1,6 +1,16 @@
 import "colors";
 
-import { Value } from "../Value";
+import { Value, ValuePaths } from "../Value";
+
+export interface ValueJSON {
+  values: [
+    {
+      data: string | number;
+      total: number;
+      paths: ValuePaths;
+    }
+  ];
+}
 
 export class ValueMap {
   map: Map<string | number, Value> = new Map();
@@ -18,40 +28,20 @@ export class ValueMap {
       this.addValue(value, path);
     });
   }
-  toJSON(min: number = 2) {
-    const sortedValueArray = this.toSortedArray();
-    const json: any = { values: [] };
+  toJSON(min: number): ValueJSON {
+    const valueArray = Array.from(this.map.values());
+    const sortedValueArray = valueArray.sort((a, b) => {
+      return a.getTotal() - b.getTotal();
+    });
+    const valueJSON: any = { values: [] };
     sortedValueArray.forEach(v => {
       if (v.getTotal() < min) return;
-      json.values.push({
+      valueJSON.values.push({
         data: v.getData(),
         total: v.getTotal(),
         paths: v.getPaths()
       });
     });
-    return json;
-  }
-  private toValueArray() {
-    return Array.from(this.map.values());
-  }
-  private toSortedArray() {
-    const valueArray = this.toValueArray();
-    return valueArray.sort((a, b) => {
-      return a.getTotal() - b.getTotal();
-    });
-  }
-  print(min: number = 2) {
-    const sortedValueArray = this.toSortedArray();
-    sortedValueArray.forEach(v => {
-      if (v.getTotal() < min) return;
-      console.log(
-        `${typeof v.getData()}: `.cyan.bold + `${v.getData()}`.bgCyan
-      );
-      const paths = v.getPaths();
-      for (let [path, amount] of Object.entries(paths)) {
-        console.log(`    ${path} ` + `${amount}`.yellow.bold);
-      }
-      console.log(`    TOTAL: ${v.getTotal()}`.red.bold);
-    });
+    return valueJSON;
   }
 }

@@ -8,7 +8,9 @@ process.argv.push(
   "-i",
   "thing1,thing2,*test*,benchmark*",
   "-e",
-  ".js,.ts"
+  ".js,.ts",
+  "-m",
+  "4"
 );
 
 const args = cliEntry();
@@ -18,6 +20,7 @@ describe("cliEntry", () => {
     expect(args).toHaveProperty("path");
     expect(args).toHaveProperty("ignore");
     expect(args).toHaveProperty("extensions");
+    expect(args).toHaveProperty("min");
   });
   it("Converts ignoreStrings, ignoreGlobs, and extensions to arrays", () => {
     // Globs aren't converted to regex until passed through handleOptions
@@ -25,6 +28,7 @@ describe("cliEntry", () => {
     const expectedExtensions = [".js", ".ts"];
     expect(args.ignore).toEqual(expect.arrayContaining(expectedIgnore));
     expect(args.extensions).toEqual(expect.arrayContaining(expectedExtensions));
+    expect(args.min).toBe(4);
   });
   it("Throws an error if a nonexistent config file is specified", () => {
     process.argv.push("-c", "aisdjfoiasdjf");

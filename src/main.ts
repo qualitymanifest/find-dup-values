@@ -11,7 +11,7 @@ import {
   removeCommentsRegex
 } from "./regex";
 import { handleOptions, RawOptions, ParsedOptions } from "./handleOptions";
-import { ValueMap } from "./ValueMap";
+import { ValueMap, ValueJSON } from "./ValueMap";
 
 const valueMap = new ValueMap();
 let filesProcessed = 0;
@@ -82,7 +82,7 @@ const processFile = async (path: string) => {
   }
 };
 
-const main = (config: RawOptions): Promise<ValueMap> => {
+const main = (config: RawOptions): Promise<ValueJSON> => {
   return new Promise(async (resolve, reject) => {
     process.on("uncaughtException", err => {
       // This catches errors thrown by q.error
@@ -98,7 +98,7 @@ const main = (config: RawOptions): Promise<ValueMap> => {
     } catch (err) {
       reject(err);
     }
-    resolve(valueMap);
+    resolve(valueMap.toJSON(options.min));
   });
 };
 

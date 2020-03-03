@@ -13,10 +13,11 @@ Processing all 1.23mloc of JavaScript in Node.js (including lib, tests, benchmar
 
 <pre>
 npm run start -- [options]
-<b>-p | --path</b>           Path to file or directory to start at
--i | --ignore  Comma-separated list of file or directory names to ignore, compatible with globs
-<b>-e | --extensions</b>     Comma-separated list of file extensions to read from
--c | --config         Path to config file which exports the above values
+<b>-p | --path</b>         Path to file or directory to start at
+<b>-e | --extensions</b>   Comma-separated list of file extensions to read from
+-i | --ignore       Comma-separated list of file/dir names to ignore, compatible with globs
+-m | --min          Minimum number of times a value must be repeated to be included
+-c | --config       Path to config file which exports the above values
 </pre>
 
 #### Note:
@@ -38,24 +39,21 @@ const fdv = require("find-dup-values");
 
 const config = {
   path: "../path/to/project", // required
+  extensions: [".js", ".jsx", ".ts", ".tsx"], // required
   ignore: [".someDir", "someFile.js", "*test*", "*spec.js"],
-  extensions: [".js", ".jsx", ".ts", ".tsx"] // required
+  min: 3
 };
 
 fdv(config)
-  .then(valueMap => {
-    valueMap.print();
-    // or, do something with the actual values
-    // valueMap.map is a Map with string/number values for keys and Value objects for properties
-    const valueArray = Array.from(valueMap.map.values());
-    valueArray.forEach(value => {
-      // Get the actual string/number value of the Value object
-      const data = value.getData();
-      // Get an object containing the files the value was found in
-      // Object keys are file names, properties are number of times the value was found in that file
-      const paths = value.getPaths();
-      // Get the total number of times the value was found in the project
-      const total = value.getTotal();
+  .then(valueJSON => {
+    // valueJSON contains a `values` key, which is an array containing the following value objects
+    // sorted in ascending order by the total number of occurrences
+    valueJSON.values.forEach(value => {
+      console.log(value.data); // the string/number value
+      console.log(value.total); // the total number of times it was found across the project
+      for (let [path, amount] of Object.entries(value.paths)) {
+        console.log(`${path}: ${amount}`); // file path and # of occurrences at that path
+      }
     });
   })
   .catch(err => /* handle err */);

@@ -6,12 +6,14 @@ import {
   BAD_PATH_ERR,
   NO_PATH_ERR,
   NO_EXT_ERR,
+  MIN_TYPE_ERR,
   DEFAULT_IGNORE
 } from "../constants";
 
 interface Options {
   path: string;
   extensions: string[];
+  min: number;
 }
 
 export interface RawOptions extends Options {
@@ -37,13 +39,14 @@ const processIgnore = (ignoreItems: string[] = []) => {
 };
 
 export const handleOptions = (rawOptions: RawOptions) => {
-  const { path, ignore, extensions } = rawOptions;
+  const { path, ignore, extensions, min } = rawOptions;
   const { ignoreStrings, ignoreRegexes } = processIgnore(ignore);
   const processedOptions: ParsedOptions = {
     path,
     ignoreStrings,
     ignoreRegexes,
-    extensions
+    extensions,
+    min: min || 2
   };
   const errs = [];
   if (!processedOptions.path) {
@@ -55,6 +58,9 @@ export const handleOptions = (rawOptions: RawOptions) => {
   if (!processedOptions.extensions) {
     // extensions cannot be omitted
     errs.push(NO_EXT_ERR);
+  }
+  if (processedOptions.min && typeof processedOptions.min !== "number") {
+    errs.push(MIN_TYPE_ERR);
   }
   if (errs.length) {
     throw new Error(errs.join("\n"));
