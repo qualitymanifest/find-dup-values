@@ -41,11 +41,6 @@ const q = queue(async ({ path, isDir }: QueueArgs) => {
   }
 }, 1);
 
-q.error((err, task) => {
-  err.message = `Processing ${task.path} failed`.red;
-  throw err;
-});
-
 const shouldRead = (name: string, isDir: boolean) => {
   if (!isDir && !options.extensions.includes(extname(name))) {
     return false;
@@ -85,9 +80,10 @@ const processFile = async (path: string) => {
 const main = (config: RawOptions): Promise<ValueJSON> => {
   valueMap = new ValueMap();
   return new Promise(async (resolve, reject) => {
-    process.on("uncaughtException", err => {
-      // This catches errors thrown by q.error
-      // This way the caller (CLI or other application) can handle it
+    // q errors are not caught in the try/catch below
+    // Catch them within scope of the promise so they can be rejected
+    q.error((err, task) => {
+      err.message = `Processing ${task.path} failed: ${err.message}`.red;
       reject(err);
     });
     try {

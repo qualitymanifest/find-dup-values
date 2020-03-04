@@ -47,7 +47,7 @@ const cliEntry = () => {
       print(valueJSON);
     })
     .catch((err: Error) => {
-      throw err;
+      console.log(err);
     });
 };
 
