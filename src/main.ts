@@ -35,9 +35,7 @@ const q = queue(async ({ path, isDir }: QueueArgs) => {
   } else {
     await processFile(path);
     filesProcessed++;
-    if (filesProcessed % 100 === 0) {
-      process.stdout.write(`Files processed: ${filesProcessed} \r`);
-    }
+    process.stdout.write(`Files processed: ${filesProcessed} \r`);
   }
 }, 1);
 
@@ -95,7 +93,9 @@ const main = (config: RawOptions): Promise<ValueJSON> => {
     } catch (err) {
       reject(err);
     }
-    resolve(valueMap.toJSON(options.min));
+    const valueJSON = valueMap.toJSON(options.min);
+    valueJSON.filesProcessed = filesProcessed;
+    resolve(valueJSON);
   });
 };
 

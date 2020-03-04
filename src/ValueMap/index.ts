@@ -10,6 +10,7 @@ export interface ValueJSON {
       paths: ValuePaths;
     }
   ];
+  filesProcessed: number;
 }
 
 export class ValueMap {
