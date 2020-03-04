@@ -13,8 +13,8 @@ import {
 import { handleOptions, RawOptions, ParsedOptions } from "./handleOptions";
 import { ValueMap, ValueJSON } from "./ValueMap";
 
-const valueMap = new ValueMap();
 let filesProcessed = 0;
+let valueMap: ValueMap;
 let options: ParsedOptions;
 
 type QueueArgs = {
@@ -83,6 +83,7 @@ const processFile = async (path: string) => {
 };
 
 const main = (config: RawOptions): Promise<ValueJSON> => {
+  valueMap = new ValueMap();
   return new Promise(async (resolve, reject) => {
     process.on("uncaughtException", err => {
       // This catches errors thrown by q.error

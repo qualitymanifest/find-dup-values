@@ -52,7 +52,7 @@ fdv(config)
       console.log(value.data); // the string/number value
       console.log(value.total); // the total number of times it was found across the project
       for (let [path, amount] of Object.entries(value.paths)) {
-        console.log(`${path}: ${amount}`); // file path and # of occurrences at that path
+        console.log(`${path}: ${amount}`); // file path and number of occurrences at that path
       }
     });
   })
