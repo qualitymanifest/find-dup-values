@@ -23,7 +23,7 @@
     "@types/is-glob": "^4.0.1",
     "@types/minimist": "^1.2.0",
     "@types/node": "^13.13.6",
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "colors": "^1.4.0",
     "glob-to-regexp": "^0.4.1",
     "is-glob": "^4.0.1",
